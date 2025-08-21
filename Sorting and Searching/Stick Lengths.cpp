@@ -19,18 +19,42 @@
 #define ub                    upper_bound
 #define N                     1000000
 using namespace std;
+ll func(ll ele,vl v){
+    ll temp=0;
+    for(auto it:v){
+        temp += abs (it-ele);
+    }
+    return temp;
+}
 void solve(){
     ll n;
     cin>>n;
     vl v(n);
     loop(i,0,n-1)cin>>v[i];
-    ll sum=0, mx=INT_MIN;
+    ll low = 1e18, high = -1e18;
     loop(i,0,n-1){
-        sum+=v[i];
-        if(sum<0)sum=0;
-        mx = max(mx,sum);
+        cin>>v[i];
+        low = min(v[i],low);
+        high = max(high,v[i]);
     }
-    cout<<mx<<endl;
+    while(high-low>=3){ // applying ternary search
+        ll mid1 = low + (high - low)/3;
+        ll mid2 = high - (high-low)/3;
+        ll x = func (mid1,v);
+        ll y = func (mid2,v);
+        if(x>y)low = mid1;
+        else if(x<y)high = mid2;
+        else {
+            low = mid1;
+            high = mid2;
+        }
+    }
+    ll ans = 1e18;
+    loop(i,low,high){
+        ans = min(ans,func(i,v));
+    }
+    cout<<ans<<endl;
+    
 }
 int32_t main(){
     ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
